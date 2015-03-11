@@ -6,12 +6,13 @@ module Curricula
   class Course
   
     attr_reader :name, :hours
-    attr_accessor :prereqs
+    attr_accessor :prereqs, :cruciality
   
     def initialize name, hours
       @name = name
       @hours = hours
       @prereqs = [] 
+      @cruciality = 0
     end
 
     def graph_edges
@@ -51,6 +52,10 @@ module Curricula
       @courses.each_value.map(&:graph_edges).flatten(1).reject &:empty?
     end
 
+    def cruciality
+      @courses.each_value.map { |course| [course.name,course.cruciality] }
+    end
+
     private
   
     def process
@@ -64,6 +69,7 @@ module Curricula
       Spreadsheet.open(@spreadsheet).worksheets.first.each do |row|
         if row[1]
           @courses[row.last].prereqs << @courses[row.first]
+          increase_cruciality @courses[row.first], @courses[row.last]
         else
           @courses[row.first] = Course.new row.first, row.last
         end
@@ -71,11 +77,16 @@ module Curricula
     end
   
     def course_hours course, visited = []
-      raise :circular if visited.include? course
+      error :circular if visited.include? course
       visited << course
       course.hours + course.prereqs.map{ |prereq| course_hours(prereq, visited).to_i }.reduce(:+).to_i
     end
-  
+
+    def increase_cruciality course, prerequisite
+      prerequisite.cruciality += course.hours
+      prerequisite.prereqs.each { |prereq| increase_cruciality @courses[course], prereq }
+    end
+
     def error name
       case name
       when :format
