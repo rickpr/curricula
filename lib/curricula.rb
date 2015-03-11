@@ -84,7 +84,7 @@ module Curricula
 
     def increase_cruciality course, prerequisite
       prerequisite.cruciality += course.hours
-      prerequisite.prereqs.each { |prereq| increase_cruciality @courses[course], prereq }
+      prerequisite.prereqs.each { |prereq| increase_cruciality course, @courses[prereq] }
     end
 
     def error name
