@@ -1,6 +1,6 @@
 # Curricula
 
-TODO: Write a gem description
+A gem for analyzing degree plan complexity at UNM.
 
 ## Installation
 
