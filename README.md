@@ -44,6 +44,13 @@ Then, compute the efficiency. Lower is better:
 my_plan.efficiency
 ```
 
+The `cruciality` method will return an array of arrays with the cruciality of
+each course next to it. The cruciality is based on how many other courses need
+that particular course.
+```ruby
+my_plan.cruciality
+```
+
 If you need a list of courses (as a hash), use `course_list`:
 
 ```ruby
