@@ -69,7 +69,7 @@ module Curricula
       Spreadsheet.open(@spreadsheet).worksheets.first.each do |row|
         if row[1]
           @courses[row.last].prereqs << @courses[row.first]
-          increase_cruciality @courses[row.first], @courses[row.last]
+          increase_cruciality row.first, row.last
         else
           @courses[row.first] = Course.new row.first, row.last
         end
@@ -82,9 +82,9 @@ module Curricula
       course.hours + course.prereqs.map{ |prereq| course_hours(prereq, visited).to_i }.reduce(:+).to_i
     end
 
-    def increase_cruciality course, prerequisite
-      prerequisite.cruciality += course.hours
-      prerequisite.prereqs.each { |prereq| increase_cruciality course, @courses[prereq] }
+    def increase_cruciality prerequisite, course
+      @courses[prerequisite].cruciality += @courses[course].hours
+      @courses[prerequisite].prereqs.each { |prereq| increase_cruciality prereq, course }
     end
 
     def error name
