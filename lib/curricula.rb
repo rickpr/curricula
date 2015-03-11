@@ -62,7 +62,7 @@ module Curricula
       build_courses
       all_hours = @courses.each_value.map &method(:course_hours)
       @course_hours = @courses.each_value.map(&:name).zip(all_hours).to_h
-      @efficiency = all_hours.inject :+
+      @efficiency = all_hours.reduce :+
     end
   
     def build_courses
@@ -73,7 +73,7 @@ module Curricula
         else
           @courses[row.first] = Course.new row.first, row.last
         end
-      end #rescue error :format
+      end rescue error :format
     end
   
     def course_hours course, visited = []
