@@ -29,7 +29,7 @@ do this. Here's an example to get you going (leave out the header):
 |MATH 162| |4|
 |MATH 163| |4|
 |MATH 264| |3|
-|MATH 162|prereq|MATH 162|
+|MATH 162|prereq|MATH 163|
 |MATH 163|prereq|MATH 264|
 
 Add an Excel spreadsheet to this:
