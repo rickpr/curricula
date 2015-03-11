@@ -16,7 +16,7 @@ module Curricula
     end
 
     def graph_edges
-      prereqs.map{ |prereq| { source: prereq.name, destination: name } }
+      prereqs.map{ |prereq| { source: prereq, destination: name } }
     end
   
   end
@@ -68,18 +68,18 @@ module Curricula
     def build_courses
       Spreadsheet.open(@spreadsheet).worksheets.first.each do |row|
         if row[1]
-          @courses[row.last].prereqs << @courses[row.first]
+          @courses[row.last].prereqs << row.first
           increase_cruciality row.first, row.last
         else
           @courses[row.first] = Course.new row.first, row.last
         end
-      end rescue error :format
+      end #rescue error :format
     end
   
     def course_hours course, visited = []
-      error :circular if visited.include? course
-      visited << course
-      course.hours + course.prereqs.map{ |prereq| course_hours(prereq, visited).to_i }.reduce(:+).to_i
+      error :circular if visited.include? course.name
+      visited << course.name
+      course.hours + course.prereqs.map{ |prereq| course_hours(@courses[prereq], visited).to_i }.reduce(:+).to_i
     end
 
     def increase_cruciality prerequisite, course
